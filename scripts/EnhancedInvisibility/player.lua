@@ -6,11 +6,7 @@ local core = require('openmw.core')
 local self = require('openmw.self')
 local nearby = require('openmw.nearby')
 
-if core.API_REVISION < 147 then
-    error("Your OpenMW is too old for this mod. Please update.")
-    return
-end
-
+local oldVersion = core.API_REVISION < 147
 local shader = postprocessing.load('EnhancedInvisibility')
 local selfActiveEffects = types.Player.activeEffects(self)
 local selfActiveSpells = types.Player.activeSpells(self)
@@ -39,6 +35,10 @@ local function sendEventToNearbyCreatures(event)
 end
 
 local function onUpdate()
+    if oldVersion then
+        isActive = invisActive()
+    end
+
     if not wasActive and isActive then
         wasActive = true
 

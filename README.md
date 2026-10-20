@@ -6,7 +6,7 @@ _For an MWSE alternative, check out [MM - Enhanced Invisibility](https://www.nex
 
 Enhances Invisibility effect with new shader and VFX.
 
-Modernized and heavily optimized version of [openmw-enhanced-invisibility](https://gitlab.com/fallchildren/openmw-enhanced-invisibility) by fallchildren, wazabear and Epoch.
+Modernized and heavily optimized version of [openmw-enhanced-invisibility](https://gitlab.com/fallchildren/openmw-enhanced-invisibility) by fallchildren, wazabear and Epoch. Now it's effectively free in terms of performance.
 
 ## Compatibility
 
@@ -21,8 +21,9 @@ Might raise issues with mods that use invisibility in a weird way, but that's ra
 
 ## Requirements
 
-- OpenMW 0.52 Nightly or newer
 - [MM - Enhanced Invisibility](https://www.nexusmods.com/morrowind/mods/47565)
+
+OpenMW 0.52 users will get better performance. Though even 0.51 will run perfectly fine.
 
 ## Credits
 
