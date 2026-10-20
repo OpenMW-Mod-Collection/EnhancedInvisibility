@@ -1,0 +1,3 @@
+PLAYER: scripts/EnhancedInvisibility/player.lua
+GLOBAL: scripts/EnhancedInvisibility/global.lua
+CREATURE: scripts/EnhancedInvisibility/creature.lua

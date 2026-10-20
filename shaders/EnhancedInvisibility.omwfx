@@ -1,0 +1,187 @@
+uniform_int invisint {
+    default = 1;
+    static = false;
+}
+
+uniform_int warpint {
+    default = 1;
+    static = false;
+}
+
+uniform_float wspeed {
+    default = -0.3;
+    step = 0.01;
+}
+
+uniform_float thres {
+    default = 0.3;
+    step = 0.01;
+}
+
+uniform_float thresm {
+    default = 1.3;
+    step = 0.01;
+}
+
+uniform_float hscale {
+    default = 0.19;
+    step = 0.01;
+}
+
+uniform_bool uEnabled {
+	default = true;
+	header = "Debug";
+	display_name = "Enable Shader";
+	description = "Toggle the entire shader";
+}
+
+sampler_2d warpSampler {
+    source = "textures/warpfxnorm.dds";
+    wrap_s = repeat;
+    wrap_t = repeat;
+}
+
+shared {
+
+    #define PI 3.1415926535897932384626433832795
+    #define N 8
+
+    #define TAU 6.28318530718
+
+    #define TILING_FACTOR 1.0
+    #define MAX_ITER 6
+
+    vec3 toWorld(vec2 tex) {
+        vec3 rt = vec3(omw.viewMatrix[0][0], omw.viewMatrix[1][0], omw.viewMatrix[2][0]);
+        vec3 up = -vec3(omw.viewMatrix[0][1], omw.viewMatrix[1][1], omw.viewMatrix[2][1]);
+        vec3 fw = -vec3(omw.viewMatrix[0][2], omw.viewMatrix[1][2], omw.viewMatrix[2][2]);
+
+        float x = 1.0 / omw.projectionMatrix[0][0];
+        float y = -1.0 / omw.projectionMatrix[1][1];
+        vec2 uv = 2.0 * tex - 1.0;
+
+        return fw + (uv.x * rt * x) + (uv.y * up * y);
+    }
+
+    vec2 cylindrical(vec2 tex) {
+        vec3 worldpos = toWorld(tex);
+        float u = -atan(worldpos.y, worldpos.x) / PI; // atan might be screwey, note for later
+        float v = -worldpos.z / length(worldpos.xy);
+        return vec2(0.5 * u + 0.5, hscale * v);
+    }
+
+    float waterHighlight(vec2 p, float time) {
+        vec2 i = vec2(p);
+        float c = 0.0;
+        float foaminess_factor = 1.81;
+        float inten = .005 * foaminess_factor;
+
+        for (int n = 0; n < MAX_ITER; n++)
+        {
+            float t = time * (1.0 - (3.5 / float(n+1)));
+            i = p + vec2(cos(t - i.x) + sin(t + i.y), sin(t - i.y) + cos(t + i.x));
+            c += 1.0/length(vec2(p.x / (sin(i.x+t)),p.y / (cos(i.y+t))));
+        }
+        c = 0.2 + c / (inten * float(MAX_ITER));
+        c = 1.17-pow(c, 1.4);
+        c = pow(abs(c), 8.0);
+        return c / sqrt(foaminess_factor);
+    }
+
+    vec3 saturate(vec3 value) {
+		return clamp(value, 0.0, 1.0);
+	}
+
+	float saturate(float value) {
+		return clamp(value, 0.0, 1.0);
+	}
+}
+
+fragment brightpass {
+	omw_In vec2 omw_TexCoord;
+
+	void main()
+	{
+        vec4 col = omw_GetLastShader(omw_TexCoord) * 1.4;
+
+        col = max( col - thres, 0.0 );
+        col /= 1.0 + col;
+        col *= thresm;
+        col = mix(col, vec4(dot(col.xyz, vec3(0.299,0.587,0.114))), 0.7);
+        //col.rgb = lerp(col.rgb, float3(0.8,0.6,0.7), saturate(col.rgb * 10));
+        omw_FragColor = col;
+	}
+}
+
+fragment warpfx {
+	omw_In vec2 omw_TexCoord;
+
+	void main()
+	{
+        float dmask = omw_GetLinearDepth(omw_TexCoord);
+        float inoff = mix(1.0, 0.5, omw.isInterior);
+        float fmask = smoothstep(500 * inoff, 3000  * inoff, dmask);
+
+
+        float maskint = 1.0 - smoothstep(0,5500, dmask);
+        dmask = smoothstep(55, 60, dmask);
+
+        float timetick = omw.simulationTime * wspeed;
+        vec2 uv = cylindrical(omw_TexCoord);
+
+        float ftime = timetick * 0.4 + 23.0;
+
+        vec2 p = mod(uv*TAU, TAU)-250.0;
+
+
+
+        float middle = 1.0 - min(1.0, abs(uv.g));
+        middle = pow(middle, 4.0);
+
+        vec2 warpn = omw_Texture2D(warpSampler, vec2(uv * vec2(2.0,-2.0) + vec2(0.0, timetick))).xy + 0.5;
+
+        warpn = mix(vec2(1.0), mix(vec2(1.0, 1.0), warpn * dmask, warpint), dmask * middle);
+
+        warpn = mix(warpn, vec2(1.0, 1.0), mix(vec2(1.0), vec2(0.95, 0.7), maskint));
+        vec2 warpnless = mix(warpn, vec2(1.0, 1.0), mix(vec2(1.0), vec2(0.99, 0.8), maskint));
+
+        vec4 orgorg = omw_GetLastShader(omw_TexCoord);
+        vec4 org = omw_GetLastShader(omw_TexCoord * warpnless);
+
+        vec4 px = omw_GetLastPass(omw_TexCoord * warpn);
+
+        float c = waterHighlight(p, ftime);
+
+        vec3 water_color = vec3(0.0, 0.35, 0.5);
+        vec3 colorfog = saturate(c + water_color);
+
+
+        colorfog = mix(water_color, colorfog, middle);
+
+
+
+        vec3 comb = org.rgb + px.rgb;
+        comb = mix(comb, inoff * colorfog, saturate( fmask + colorfog * 0.0005 + dot(vec2(1.0), warpn) * 0.0005));
+
+
+        comb = mix(comb, vec3(dot(vec3(0.299,0.587,0.114), comb)), 0.6);
+
+        vec3 contrasted = comb*comb*comb*(comb*(comb*6.0 - 15.0) + 10.0);
+        comb.rgb = mix(comb.rgb, contrasted, 0.5);
+
+        comb = mix(comb, comb * vec3(0.83,0.95,0.87), 3);
+
+
+
+        comb = mix(orgorg.xyz, vec3(comb * 1.2), invisint);
+        omw_FragColor = vec4(comb, 1.0);
+	}
+}
+
+technique {
+    description = "shader";
+    passes = brightpass, warpfx;
+    version = "1.0";
+    author = "Vtastek, Epoch";
+    dynamic = true;
+}
