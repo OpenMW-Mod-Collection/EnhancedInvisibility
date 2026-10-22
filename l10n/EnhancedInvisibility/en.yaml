@@ -1,0 +1,12 @@
+page_name: Enhanced Invisibility
+page_desc: Enhances Invisibility and Chameleon effects with a custom shader and VFX.
+
+settings_groupName: Settings
+enable_name: Enable Effects for
+invisibility: Invisibility
+chameleon: Chameleon
+chameleonThreshold_name: Chameleon Magnitude Threshold
+chameleonThreshold_desc: |
+  At which total Chameleon magnitude the effects will get active.
+
+  The threshold is inclusive.

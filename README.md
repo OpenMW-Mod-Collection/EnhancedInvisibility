@@ -4,7 +4,7 @@ Using invisibility now changes the way you view the world. Not only you become t
 
 _For an MWSE alternative, check out [MM - Enhanced Invisibility](https://www.nexusmods.com/morrowind/mods/47565) by Vtasek, OperatorJack and Kurpulio._
 
-Enhances Invisibility effect with new shader and VFX.
+Enhances Invisibility and Chameleon effects with new shader and VFX.
 
 Modernized and heavily optimized version of [openmw-enhanced-invisibility](https://gitlab.com/fallchildren/openmw-enhanced-invisibility) by fallchildren, wazabear and Epoch. Now it's effectively free in terms of performance.
 

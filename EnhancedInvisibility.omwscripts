@@ -1,3 +1,8 @@
+MENU: scripts/EnhancedInvisibility/utils/mutiCheckbox.lua
+MENU: scripts/EnhancedInvisibility/utils/SuperSlider6.lua
+
+MENU: scripts/EnhancedInvisibility/settingsMenu.lua
+
 PLAYER: scripts/EnhancedInvisibility/player.lua
 GLOBAL: scripts/EnhancedInvisibility/global.lua
 CREATURE: scripts/EnhancedInvisibility/creature.lua

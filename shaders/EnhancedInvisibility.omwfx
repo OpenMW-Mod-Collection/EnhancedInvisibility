@@ -1,38 +1,240 @@
-uniform_int invisint {
-    default = 1;
-    static = false;
-}
-
-uniform_int warpint {
-    default = 1;
-    static = false;
-}
-
-uniform_float wspeed {
-    default = -0.3;
-    step = 0.01;
-}
-
-uniform_float thres {
-    default = 0.3;
-    step = 0.01;
-}
-
-uniform_float thresm {
-    default = 1.3;
-    step = 0.01;
-}
-
-uniform_float hscale {
-    default = 0.19;
-    step = 0.01;
-}
-
 uniform_bool uEnabled {
-	default = true;
-	header = "Debug";
-	display_name = "Enable Shader";
-	description = "Toggle the entire shader";
+    default = true;
+    static = true;
+    header = "Main";
+    display_name = "Enable Shader";
+    description = "Turns the whole effect on or off (handy for debugging).";
+}
+
+uniform_float uStrength {
+    default = 1.0;
+    min = 0.0;
+    max = 1.0;
+    step = 0.01;
+    static = true;
+    display_name = "Effect Strength";
+    description = "Your own blend between the normal image (0) and the full invisibility look (1).";
+}
+
+uniform_float uBrightness {
+    default = 1.2;
+    min = 0.3;
+    max = 2.0;
+    step = 0.01;
+    static = true;
+    display_name = "Brightness";
+    description = "Overall brightness of the invisibility look.";
+}
+
+uniform_bool uFogEnabled {
+    default = true;
+    static = true;
+    header = "Fog";
+    display_name = "Enable Fog";
+    description = "Toggles the green fog that swallows the distance.";
+}
+
+uniform_float uFogStart {
+    default = 500.0;
+    min = 0.0;
+    max = 8000.0;
+    step = 10.0;
+    static = true;
+    display_name = "Fog Start Distance";
+    description = "Distance (game units) where the fog begins to appear.";
+}
+
+uniform_float uFogEnd {
+    default = 3000.0;
+    min = 100.0;
+    max = 16000.0;
+    step = 50.0;
+    static = true;
+    display_name = "Fog End Distance";
+    description = "Distance (game units) where the fog is fully opaque. Lower = thicker fog.";
+}
+
+uniform_float uFogOpacity {
+    default = 1.0;
+    min = 0.0;
+    max = 1.0;
+    step = 0.01;
+    static = true;
+    display_name = "Fog Opacity";
+    description = "Maximum opacity of the fog. Lower values let distant objects show through.";
+}
+
+uniform_vec3 uFogColor {
+    default = vec3(0.0, 0.35, 0.5);
+    min = vec3(0.0, 0.0, 0.0);
+    max = vec3(1.0, 1.0, 1.0);
+    step = 0.01;
+    static = true;
+    display_name = "Fog Color";
+    description = "Base color of the fog.";
+}
+
+uniform_float uFogInteriorDist {
+    default = 1;
+    min = 0.1;
+    max = 4.0;
+    step = 0.1;
+    static = true;
+    display_name = "Interior Fog Distance Scale";
+    description = "Multiplies fog distances inside interiors. 0.5 = fog is twice as close.";
+}
+
+uniform_float uFogInteriorBright {
+    default = 0.5;
+    min = 0.0;
+    max = 1.5;
+    step = 0.01;
+    static = true;
+    display_name = "Interior Fog Brightness";
+    description = "Fog brightness multiplier inside interiors.";
+}
+
+uniform_float uFoam {
+    default = 1.81;
+    min = 0.5;
+    max = 4.0;
+    step = 0.01;
+    static = true;
+    display_name = "Light Ripple Intensity";
+    description = "Strength of the animated light pattern inside the fog.";
+}
+
+uniform_float uWarpStrength {
+    default = 1.0;
+    min = 0.0;
+    max = 1.5;
+    step = 0.01;
+    static = true;
+    header = "Distortion";
+    display_name = "Warp Strength";
+    description = "How strongly the image wobbles. 0 disables the distortion.";
+}
+
+uniform_float uWarpStart {
+    default = 55.0;
+    min = 0.0;
+    max = 1000.0;
+    step = 1.0;
+    static = true;
+    display_name = "Warp Start Distance";
+    description = "Objects closer than this are not distorted (keeps your immediate view clear).";
+}
+
+uniform_float uWarpFade {
+    default = 5.0;
+    min = 1.0;
+    max = 500.0;
+    step = 1.0;
+    static = true;
+    display_name = "Warp Fade Length";
+    description = "How quickly the distortion fades in after the start distance.";
+}
+
+uniform_float uWarpRange {
+    default = 5500.0;
+    min = 500.0;
+    max = 20000.0;
+    step = 100.0;
+    static = true;
+    display_name = "Warp Range";
+    description = "Distance over which the distortion calms down for nearby objects.";
+}
+
+uniform_float uWarpScale {
+    default = 2.0;
+    min = 0.25;
+    max = 8.0;
+    step = 0.05;
+    static = true;
+    display_name = "Warp Pattern Scale";
+    description = "Size of the distortion pattern. Higher = smaller, busier ripples.";
+}
+
+uniform_float uSpeed {
+    default = 0.3;
+    min = -2.0;
+    max = 2.0;
+    step = 0.01;
+    static = true;
+    display_name = "Animation Speed";
+    description = "Speed of the warp motion. Negative values reverse the direction.";
+}
+
+uniform_float uGlowThreshold {
+    default = 0.3;
+    min = 0.0;
+    max = 1.5;
+    step = 0.01;
+    static = true;
+    header = "Glow";
+    display_name = "Glow Threshold";
+    description = "Only pixels brighter than this contribute to the glow.";
+}
+
+uniform_float uGlowIntensity {
+    default = 1.3;
+    min = 0.0;
+    max = 4.0;
+    step = 0.01;
+    static = true;
+    display_name = "Glow Intensity";
+    description = "Strength of the glow. 0 disables it.";
+}
+
+uniform_float uGlowDesat {
+    default = 0.7;
+    min = 0.0;
+    max = 1.0;
+    step = 0.01;
+    static = true;
+    display_name = "Glow Desaturation";
+    description = "How much color is removed from the glow (1 = grayscale glow).";
+}
+
+uniform_float uDesat {
+    default = 0.6;
+    min = 0.0;
+    max = 1.0;
+    step = 0.01;
+    static = true;
+    header = "Color";
+    display_name = "Desaturation";
+    description = "How washed-out the scene looks while invisible.";
+}
+
+uniform_float uContrast {
+    default = 0.5;
+    min = 0.0;
+    max = 1.0;
+    step = 0.01;
+    static = true;
+    display_name = "Contrast";
+    description = "Amount of contrast boost.";
+}
+
+uniform_vec3 uTint {
+    default = vec3(0.83, 0.95, 0.87);
+    min = vec3(0.0, 0.0, 0.0);
+    max = vec3(1.0, 1.0, 1.0);
+    step = 0.01;
+    static = true;
+    display_name = "Tint Color";
+    description = "Color the whole scene is multiplied by.";
+}
+
+uniform_float uTintStrength {
+    default = 3.0;
+    min = 0.0;
+    max = 3.0;
+    step = 0.01;
+    static = true;
+    display_name = "Tint Strength";
+    description = "How strongly the tint is applied. 0 = no tint.";
 }
 
 sampler_2d warpSampler {
@@ -44,12 +246,9 @@ sampler_2d warpSampler {
 shared {
 
     #define PI 3.1415926535897932384626433832795
-    #define N 8
-
     #define TAU 6.28318530718
-
-    #define TILING_FACTOR 1.0
     #define MAX_ITER 6
+    #define VSCALE 0.19
 
     vec3 toWorld(vec2 tex) {
         vec3 rt = vec3(omw.viewMatrix[0][0], omw.viewMatrix[1][0], omw.viewMatrix[2][0]);
@@ -65,123 +264,133 @@ shared {
 
     vec2 cylindrical(vec2 tex) {
         vec3 worldpos = toWorld(tex);
-        float u = -atan(worldpos.y, worldpos.x) / PI; // atan might be screwey, note for later
+        float u = -atan(worldpos.y, worldpos.x) / PI;
         float v = -worldpos.z / length(worldpos.xy);
-        return vec2(0.5 * u + 0.5, hscale * v);
+        return vec2(0.5 * u + 0.5, VSCALE * v);
     }
 
     float waterHighlight(vec2 p, float time) {
         vec2 i = vec2(p);
         float c = 0.0;
-        float foaminess_factor = 1.81;
-        float inten = .005 * foaminess_factor;
+        float foaminess_factor = uFoam;
+        float inten = 0.005 * foaminess_factor;
 
         for (int n = 0; n < MAX_ITER; n++)
         {
-            float t = time * (1.0 - (3.5 / float(n+1)));
+            float t = time * (1.0 - (3.5 / float(n + 1)));
             i = p + vec2(cos(t - i.x) + sin(t + i.y), sin(t - i.y) + cos(t + i.x));
-            c += 1.0/length(vec2(p.x / (sin(i.x+t)),p.y / (cos(i.y+t))));
+            c += 1.0 / length(vec2(p.x / (sin(i.x + t)), p.y / (cos(i.y + t))));
         }
         c = 0.2 + c / (inten * float(MAX_ITER));
-        c = 1.17-pow(c, 1.4);
+        c = 1.17 - pow(c, 1.4);
         c = pow(abs(c), 8.0);
         return c / sqrt(foaminess_factor);
     }
 
     vec3 saturate(vec3 value) {
-		return clamp(value, 0.0, 1.0);
-	}
+        return clamp(value, 0.0, 1.0);
+    }
 
-	float saturate(float value) {
-		return clamp(value, 0.0, 1.0);
-	}
+    float saturate(float value) {
+        return clamp(value, 0.0, 1.0);
+    }
 }
 
 fragment brightpass {
-	omw_In vec2 omw_TexCoord;
+    omw_In vec2 omw_TexCoord;
 
-	void main()
-	{
-        vec4 col = omw_GetLastShader(omw_TexCoord) * 1.4;
+    void main()
+    {
+        vec4 col = omw_GetLastShader(omw_TexCoord);
 
-        col = max( col - thres, 0.0 );
+        if (!uEnabled || uGlowIntensity <= 0.0) {
+            omw_FragColor = vec4(0.0);
+            return;
+        }
+
+        col *= 1.4;
+        col = max(col - uGlowThreshold, 0.0);
         col /= 1.0 + col;
-        col *= thresm;
-        col = mix(col, vec4(dot(col.xyz, vec3(0.299,0.587,0.114))), 0.7);
-        //col.rgb = lerp(col.rgb, float3(0.8,0.6,0.7), saturate(col.rgb * 10));
+        col *= uGlowIntensity;
+        col = mix(col, vec4(dot(col.xyz, vec3(0.299, 0.587, 0.114))), uGlowDesat);
         omw_FragColor = col;
-	}
+    }
 }
 
 fragment warpfx {
-	omw_In vec2 omw_TexCoord;
+    omw_In vec2 omw_TexCoord;
 
-	void main()
-	{
-        float dmask = omw_GetLinearDepth(omw_TexCoord);
-        float inoff = mix(1.0, 0.5, omw.isInterior);
-        float fmask = smoothstep(500 * inoff, 3000  * inoff, dmask);
+    void main()
+    {
+        vec4 orgorg = omw_GetLastShader(omw_TexCoord);
 
+        if (!uEnabled) {
+            omw_FragColor = orgorg;
+            return;
+        }
 
-        float maskint = 1.0 - smoothstep(0,5500, dmask);
-        dmask = smoothstep(55, 60, dmask);
+        float depth = omw_GetLinearDepth(omw_TexCoord);
 
-        float timetick = omw.simulationTime * wspeed;
+        // --- Fog mask -------------------------------------------------------
+        float inDist   = mix(1.0, uFogInteriorDist, omw.isInterior);
+        float inBright = mix(1.0, uFogInteriorBright, omw.isInterior);
+        float fogStart = uFogStart * inDist;
+        float fogEnd   = max(uFogEnd * inDist, fogStart + 1.0);
+        float fmask    = smoothstep(fogStart, fogEnd, depth);
+
+        // --- Warp masks -----------------------------------------------------
+        float maskint = 1.0 - smoothstep(0.0, uWarpRange, depth);
+        float dmask   = smoothstep(uWarpStart, uWarpStart + uWarpFade, depth);
+
+        float timetick = omw.simulationTime * -uSpeed;
         vec2 uv = cylindrical(omw_TexCoord);
 
         float ftime = timetick * 0.4 + 23.0;
-
-        vec2 p = mod(uv*TAU, TAU)-250.0;
-
-
+        vec2 p = mod(uv * TAU, TAU) - 250.0;
 
         float middle = 1.0 - min(1.0, abs(uv.g));
         middle = pow(middle, 4.0);
 
-        vec2 warpn = omw_Texture2D(warpSampler, vec2(uv * vec2(2.0,-2.0) + vec2(0.0, timetick))).xy + 0.5;
+        vec2 warpn = omw_Texture2D(warpSampler, uv * vec2(uWarpScale, -uWarpScale) + vec2(0.0, timetick)).xy + 0.5;
 
-        warpn = mix(vec2(1.0), mix(vec2(1.0, 1.0), warpn * dmask, warpint), dmask * middle);
+        warpn = mix(vec2(1.0), mix(vec2(1.0), warpn * dmask, uWarpStrength), dmask * middle);
 
-        warpn = mix(warpn, vec2(1.0, 1.0), mix(vec2(1.0), vec2(0.95, 0.7), maskint));
-        vec2 warpnless = mix(warpn, vec2(1.0, 1.0), mix(vec2(1.0), vec2(0.99, 0.8), maskint));
+        warpn = mix(warpn, vec2(1.0), mix(vec2(1.0), vec2(0.95, 0.7), maskint));
+        vec2 warpnless = mix(warpn, vec2(1.0), mix(vec2(1.0), vec2(0.99, 0.8), maskint));
 
-        vec4 orgorg = omw_GetLastShader(omw_TexCoord);
         vec4 org = omw_GetLastShader(omw_TexCoord * warpnless);
-
-        vec4 px = omw_GetLastPass(omw_TexCoord * warpn);
-
-        float c = waterHighlight(p, ftime);
-
-        vec3 water_color = vec3(0.0, 0.35, 0.5);
-        vec3 colorfog = saturate(c + water_color);
-
-
-        colorfog = mix(water_color, colorfog, middle);
-
-
+        vec4 px  = omw_GetLastPass(omw_TexCoord * warpn);
 
         vec3 comb = org.rgb + px.rgb;
-        comb = mix(comb, inoff * colorfog, saturate( fmask + colorfog * 0.0005 + dot(vec2(1.0), warpn) * 0.0005));
 
+        // --- Fog ------------------------------------------------------------
+        if (uFogEnabled) {
+            float c = waterHighlight(p, ftime);
+            vec3 colorfog = saturate(c + uFogColor);
+            colorfog = mix(uFogColor, colorfog, middle);
 
-        comb = mix(comb, vec3(dot(vec3(0.299,0.587,0.114), comb)), 0.6);
+            comb = mix(comb, inBright * colorfog, saturate(fmask + colorfog * 0.0005 + dot(vec2(1.0), warpn) * 0.0005) * uFogOpacity);
+        }
 
-        vec3 contrasted = comb*comb*comb*(comb*(comb*6.0 - 15.0) + 10.0);
-        comb.rgb = mix(comb.rgb, contrasted, 0.5);
+        // --- Color grading --------------------------------------------------
+        comb = mix(comb, vec3(dot(vec3(0.299, 0.587, 0.114), comb)), uDesat);
 
-        comb = mix(comb, comb * vec3(0.83,0.95,0.87), 3);
+        vec3 contrasted = comb * comb * comb * (comb * (comb * 6.0 - 15.0) + 10.0);
+        comb = mix(comb, contrasted, uContrast);
 
+        comb = mix(comb, comb * uTint, uTintStrength);
 
+        comb *= uBrightness;
 
-        comb = mix(orgorg.xyz, vec3(comb * 1.2), invisint);
+        comb = mix(orgorg.rgb, comb, uStrength);
         omw_FragColor = vec4(comb, 1.0);
-	}
+    }
 }
 
 technique {
-    description = "shader";
+    description = "Stylized warp effect for Invisibility.";
     passes = brightpass, warpfx;
-    version = "1.0";
+    version = "1.1";
     author = "Vtastek, Epoch";
     dynamic = true;
 }

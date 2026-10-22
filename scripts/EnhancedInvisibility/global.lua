@@ -9,7 +9,7 @@ return {
             if enabled and types.Creature.objectIsInstance(actor) then
                 actor:sendEvent("EnhancedInvisibility_Enable")
             end
-        end
+        end,
     },
     eventHandlers = {
         EnhancedInvisibility_StatusUpdated = function(status)
