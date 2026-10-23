@@ -1,5 +1,9 @@
 # Enhanced Invisibility (OpenMW)
 
+## 1.1.1
+
+- Fixed typo in milticheckbox settings renderer script registration
+
 ## 1.1
 
 - Added settings page
