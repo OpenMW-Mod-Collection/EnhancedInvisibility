@@ -19,7 +19,7 @@ I.Settings.registerGroup {
         {
             key = 'enable',
             name = 'enable_name',
-            renderer = 'multiCheckbox',
+            renderer = 'multiCheckbox_V1',
             default = {
                 invisibility = true,
                 chameleon = true,
