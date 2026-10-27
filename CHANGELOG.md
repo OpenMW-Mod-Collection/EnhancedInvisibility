@@ -1,5 +1,9 @@
 # Enhanced Invisibility (OpenMW)
 
+## 1.1.2
+
+- Fixed a typo which broke all the settings (thx hyacinth)
+
 ## 1.1.1
 
 - Fixed typo in milticheckbox settings renderer script registration
